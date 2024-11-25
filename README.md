@@ -2,6 +2,7 @@
 User analysis involves tracking how users engage with a digital product, such as a software application or a mobile app.
 The insights derived from this analysis can be used by various teams within the business.
 
+![](IG_logo.PNG)
 --------------------------------------------------------------------------------------------------------------------------------------------
 creating database
 
@@ -150,6 +151,7 @@ FROM
 ORDER BY created_at
 LIMIT 5;
 ```
+![](A1.PNG)
 -------------------------------------------------------------------------------------------------------------------------------------------
 A2.Inactive user engagement
 Task : Identify users who have never posted a single photo on Instagram.
@@ -163,7 +165,8 @@ FROM
     photos p ON u.id = p.user_id
 WHERE
     p.user_id IS NULL;
-```  
+```
+![](A2.PNG)  
 -------------------------------------------------------------------------------------------------------------------------------------------
 A3.contest winner declaration
 Task : Determine the winner of the contest and provide their details to the team.
@@ -185,6 +188,7 @@ GROUP BY l.photo_id
 ORDER BY no_of_likes DESC
 LIMIT 1;
 ```
+![](A3.PNG)
 --------------------------------------------------------------------------------------------------------------------------------------------
 A4.hashtag research
 Task : Identify and suggest the top five most commonly used hashtags on the platform.
@@ -201,6 +205,7 @@ GROUP BY t.id
 ORDER BY no_of_times_used DESC
 LIMIT 5;
 ```
+![](A4.PNG)
 --------------------------------------------------------------------------------------------------------------------------------------------
 A5.Ad Campaign
 Task: Determine the day of the week when most users register on Instagram. Provide insights on when to schedule an ad campaign.
@@ -215,6 +220,7 @@ GROUP BY DAYNAME(created_at)
 ORDER BY no_of_users_registered DESC
 LIMIT 1;
 ```
+![](A5.PNG)
 --------------------------------------------------------------------------------------------------------------------------------------------
 B.Investor Metrics
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -231,6 +237,7 @@ SELECT
         FROM
             users)) AS Average_posts_per_user;
 ```
+![](B1.PNG)
 --------------------------------------------------------------------------------------------------------------------------------------------
 B2.Bots and Fake Accounts
 Task : Identify users (potential bots) who have liked every single photo on the site, as this is not typically possible for a normal user.
@@ -246,5 +253,5 @@ HAVING COUNT(photo_id) = (SELECT
     FROM
         photos); 
 ```
-
+![](B2.PNG)
 --------------------------------------------------------------------------------------------------------------------------------------------
