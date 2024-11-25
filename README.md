@@ -152,6 +152,10 @@ ORDER BY created_at
 LIMIT 5;
 ```
 ![](A1.PNG)
+
+Insights:
+• 5 users (i.e., id:- 80,67,63,95,38) are found who register on Instagram at earliest and we call them as loyal users.
+
 -------------------------------------------------------------------------------------------------------------------------------------------
 A2.Inactive user engagement
 Task : Identify users who have never posted a single photo on Instagram.
@@ -167,6 +171,10 @@ WHERE
     p.user_id IS NULL;
 ```
 ![](A2.PNG)  
+
+Insights:
+• 26 inactive users are found who never posted on Instagram.
+
 -------------------------------------------------------------------------------------------------------------------------------------------
 A3.contest winner declaration
 Task : Determine the winner of the contest and provide their details to the team.
@@ -189,6 +197,10 @@ ORDER BY no_of_likes DESC
 LIMIT 1;
 ```
 ![](A3.PNG)
+
+Insights:
+• user id 52 has posted a photo of photo id 145 which has the greatest number of likes i.e., 48 likes. Clearly the winner of the competition is user id 52. 
+
 --------------------------------------------------------------------------------------------------------------------------------------------
 A4.hashtag research
 Task : Identify and suggest the top five most commonly used hashtags on the platform.
@@ -206,6 +218,10 @@ ORDER BY no_of_times_used DESC
 LIMIT 5;
 ```
 ![](A4.PNG)
+
+Insights:
+• Top 5 popular hashtags in descending order are smile, beach, party, fun and concert. 
+
 --------------------------------------------------------------------------------------------------------------------------------------------
 A5.Ad Campaign
 Task: Determine the day of the week when most users register on Instagram. Provide insights on when to schedule an ad campaign.
@@ -221,6 +237,10 @@ ORDER BY no_of_users_registered DESC
 LIMIT 1;
 ```
 ![](A5.PNG)
+
+Insights:
+• The best day to launch an Ad Campaign is Thursday. As the maximum number of people registered is on Thursday i.e., 16 people registered. Clearly, Thursday is the best day to launch marketing campaign.
+
 --------------------------------------------------------------------------------------------------------------------------------------------
 B.Investor Metrics
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -238,6 +258,10 @@ SELECT
             users)) AS Average_posts_per_user;
 ```
 ![](B1.PNG)
+
+Insights:
+• Average posts per user is 2.57.
+
 --------------------------------------------------------------------------------------------------------------------------------------------
 B2.Bots and Fake Accounts
 Task : Identify users (potential bots) who have liked every single photo on the site, as this is not typically possible for a normal user.
@@ -254,4 +278,8 @@ HAVING COUNT(photo_id) = (SELECT
         photos); 
 ```
 ![](B2.PNG)
+
+Insights:
+• 13 accounts are identified as potential bots as they like every single photo on Instagram which is not a common behavior.
+
 --------------------------------------------------------------------------------------------------------------------------------------------
