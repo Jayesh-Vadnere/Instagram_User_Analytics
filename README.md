@@ -141,7 +141,7 @@ SELECT * FROM comments;
 ------------------------------------------------------------------------------------------------------------------------------------------
 ## A.Marketing Analysis
 ------------------------------------------------------------------------------------------------------------------------------------------
-A1.loyal user reward
+## A1.loyal user reward
 Task : Identify the five oldest users on Instagram from the provided database.
 ```sql
 SELECT 
