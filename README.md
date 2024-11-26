@@ -4,20 +4,20 @@ The insights derived from this analysis can be used by various teams within the 
 
 ![](IG_logo.PNG)
 --------------------------------------------------------------------------------------------------------------------------------------------
-creating database
+## creating database
 
 ```sql
 CREATE DATABASE ig_clone;
 ```
 --------------------------------------------------------------------------------------------------------------------------------------------
-using database
+## using database
 ```sql
 USE ig_clone;
 ```
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## creating tables within database
 --------------------------------------------------------------------------------------------------------------------------------------------
-Users table
+### Users table
 ```sql
 CREATE TABLE users(
 	id INT AUTO_INCREMENT UNIQUE PRIMARY KEY,
@@ -26,7 +26,7 @@ CREATE TABLE users(
 );
 ```
 --------------------------------------------------------------------------------------------------------------------------------------------
-Photos table
+### Photos table
 ```sql
 CREATE TABLE photos(
 	id INT AUTO_INCREMENT PRIMARY KEY,
@@ -37,7 +37,7 @@ CREATE TABLE photos(
 );
 ```
 --------------------------------------------------------------------------------------------------------------------------------------------
-Comments table
+### Comments table
 ```sql
 CREATE TABLE comments(
 	id INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,7 +50,7 @@ CREATE TABLE comments(
 );
 ```
 --------------------------------------------------------------------------------------------------------------------------------------------
-Likes table
+### Likes table
 ```sql
 CREATE TABLE likes(
 	user_id INT NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE likes(
 );
 ```
 --------------------------------------------------------------------------------------------------------------------------------------------
-follows table
+### follows table
 ```sql
 CREATE TABLE follows(
 	follower_id INT NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE follows(
 );
 ```
 --------------------------------------------------------------------------------------------------------------------------------------------
-Tags table
+### Tags table
 ```sql
 CREATE TABLE tags(
 	id INTEGER AUTO_INCREMENT PRIMARY KEY,
@@ -83,7 +83,7 @@ CREATE TABLE tags(
 );
 ```
 --------------------------------------------------------------------------------------------------------------------------------------------
-junction table: Photos - Tags
+### junction table: Photos - Tags
 ```sql
 CREATE TABLE photo_tags(
 	photo_id INT NOT NULL,
@@ -139,7 +139,7 @@ SELECT * FROM comments;
 ```
 ![](ERD.PNG)
 ------------------------------------------------------------------------------------------------------------------------------------------
-A.Marketing Analysis
+## A.Marketing Analysis
 ------------------------------------------------------------------------------------------------------------------------------------------
 A1.loyal user reward
 Task : Identify the five oldest users on Instagram from the provided database.
@@ -153,11 +153,11 @@ LIMIT 5;
 ```
 ![](A1.PNG)
 
-Insights:
+### Insights:
 • 5 users (i.e., id:- 80,67,63,95,38) are found who register on Instagram at earliest and we call them as loyal users.
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-A2.Inactive user engagement
+## A2.Inactive user engagement
 Task : Identify users who have never posted a single photo on Instagram.
 ```sql
 SELECT 
@@ -172,11 +172,11 @@ WHERE
 ```
 ![](A2.PNG)  
 
-Insights:
+### Insights:
 • 26 inactive users are found who never posted on Instagram.
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-A3.contest winner declaration
+## A3.contest winner declaration
 Task : Determine the winner of the contest and provide their details to the team.
 ```sql
 SELECT 
@@ -198,11 +198,11 @@ LIMIT 1;
 ```
 ![](A3.PNG)
 
-Insights:
+### Insights:
 • user id 52 has posted a photo of photo id 145 which has the greatest number of likes i.e., 48 likes. Clearly the winner of the competition is user id 52. 
 
 --------------------------------------------------------------------------------------------------------------------------------------------
-A4.hashtag research
+## A4.hashtag research
 Task : Identify and suggest the top five most commonly used hashtags on the platform.
 ```sql
 SELECT 
@@ -219,11 +219,11 @@ LIMIT 5;
 ```
 ![](A4.PNG)
 
-Insights:
+### Insights:
 • Top 5 popular hashtags in descending order are smile, beach, party, fun and concert. 
 
 --------------------------------------------------------------------------------------------------------------------------------------------
-A5.Ad Campaign
+## A5.Ad Campaign
 Task: Determine the day of the week when most users register on Instagram. Provide insights on when to schedule an ad campaign.
 
 ```sql
@@ -238,13 +238,13 @@ LIMIT 1;
 ```
 ![](A5.PNG)
 
-Insights:
+### Insights:
 • The best day to launch an Ad Campaign is Thursday. As the maximum number of people registered is on Thursday i.e., 16 people registered. Clearly, Thursday is the best day to launch marketing campaign.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
-B.Investor Metrics
+## B.Investor Metrics
 --------------------------------------------------------------------------------------------------------------------------------------------
-B1.user engagement
+## B1.user engagement
 Task: Calculate the average number of posts per user on Instagram. Also, provide the total number of photos on Instagram divided by the total number of users.
 
 ```sql
@@ -259,11 +259,11 @@ SELECT
 ```
 ![](B1.PNG)
 
-Insights:
+### Insights:
 • Average posts per user is 2.57.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
-B2.Bots and Fake Accounts
+## B2.Bots and Fake Accounts
 Task : Identify users (potential bots) who have liked every single photo on the site, as this is not typically possible for a normal user.
 ```sql
 SELECT 
@@ -279,7 +279,7 @@ HAVING COUNT(photo_id) = (SELECT
 ```
 ![](B2.PNG)
 
-Insights:
+### Insights:
 • 13 accounts are identified as potential bots as they like every single photo on Instagram which is not a common behavior.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
