@@ -277,7 +277,7 @@ ORDER BY avg_comments_per_photo DESC LIMIT 5;
 ![](SQL/I5.PNG)
 
 ### Insights:
-• Photo ID 13 posted by Harley_Lind18, Photo ID 157 posted by Cesar93, and Photo ID 247 posted by Keenan.Schamberger60 each received 39 comments, the highest among all.
+• Jaylan.Lakin receives an average of 35 comments per photo, the highest among all users.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## Most used comment
@@ -412,6 +412,6 @@ FROM likes WHERE user_id IN
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 Recommendation:</br>
-• Re-engagement Campaigns: Develop targeted campaigns to re-engage inactive users. This could include personalized notifications, emails, or in-app alerts encouraging them to return to the platform with enticing content, new features, or community highlights.
-• Bot Detection and Verification: Invest in stronger AI and machine learning algorithms to detect and remove fake accounts and bots. This could involve pattern recognition, CAPTCHA verifications, or AI-driven behavior analysis.
-• Incentivize Content Creation: Provide incentives for users to post photos or engage with the platform. This can be in the form of gamification (e.g., rewards or milestones for posting the first photo) or offering visibility perks for new content creators.
+• Re-engagement Campaigns: Develop targeted campaigns to re-engage inactive users. This could include personalized notifications, emails, or in-app alerts encouraging them to return to the platform with enticing content, new features, or community highlights.</br>
+• Bot Detection and Verification: Invest in stronger AI and machine learning algorithms to detect and remove fake accounts and bots. This could involve pattern recognition, CAPTCHA verifications, or AI-driven behavior analysis.</br>
+• Incentivize Content Creation: Provide incentives for users to post photos or engage with the platform. This can be in the form of gamification (e.g., rewards or milestones for posting the first photo) or offering visibility perks for new content creators.</br>
