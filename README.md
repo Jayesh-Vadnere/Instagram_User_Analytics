@@ -137,7 +137,7 @@ SELECT * FROM likes;
 SELECT * FROM follows;
 SELECT * FROM comments;
 ```
-![](ERD.PNG)
+![](SQL/ERD.PNG)
 
 Data contain the registration information of users who registered between 18th week of 21 to 17th week of 2022.
 Data from 1st December 2024, 11:27:40, including information on likes, comments, posts, photo IDs, follower details, etc. is given.
@@ -190,7 +190,7 @@ CONCAT(ROUND(weekly_percentage_increase, 2), "%") AS weekly_percentage_change,
 CONCAT(ROUND(SUM(weekly_percentage_increase) OVER (ORDER BY year, week), 2), "%") AS cumulative_percentage_change
 FROM percentage_calculations ORDER BY ROUND(weekly_percentage_increase, 2) DESC LIMIT 1;
 ```
-![](I1.PNG)
+![](SQL/I1.PNG)
 
 ### Insights:
 • Week 17 of 2017 had the highest weekly engagement compared to the previous week, with an increase of 300%.
@@ -209,7 +209,7 @@ SELECT u.username, pl.photo_id, pl.total_likes FROM user_top_photos utp
 JOIN photo_likes pl ON utp.user_id = pl.user_id AND utp.max_likes = pl.total_likes
 JOIN users u ON utp.user_id = u.id ORDER BY pl.total_likes DESC LIMIT 5;
 ```
-![](I2.PNG)  
+![](SQL/I2.PNG)  
 
 ### Insights:
 • Photo ID 145, posted by Zack_Kemmer93, received 48 likes, the highest for any photo.
@@ -229,7 +229,7 @@ FROM users u LEFT JOIN
 GROUP BY u.id, u.username
 ORDER BY avg_likes_per_photo DESC LIMIT 5;
 ```
-![](I3.PNG)
+![](SQL/I3.PNG)
 
 ### Insights:
 • Meggie_Doyle and Delpha.Kihn receive an average of 41 likes per photo, the highest among all users.  
@@ -255,7 +255,7 @@ JOIN photo_comments pl ON utp.user_id = pl.user_id AND utp.max_comments = pl.tot
 JOIN users u ON utp.user_id = u.id
 ORDER BY pl.total_comments DESC LIMIT 5;
 ```
-![](I4.PNG)
+![](SQL/I4.PNG)
 
 ### Insights:
 • Photo ID 13 posted by Harley_Lind18, Photo ID 157 posted by Cesar93, and Photo ID 247 posted by Keenan.Schamberger60 each received 39 comments, the highest among all.
@@ -274,7 +274,7 @@ LEFT JOIN (
 GROUP BY u.id, u.username
 ORDER BY avg_comments_per_photo DESC LIMIT 5;
 ```
-![](I5.PNG)
+![](SQL/I5.PNG)
 
 ### Insights:
 • Photo ID 13 posted by Harley_Lind18, Photo ID 157 posted by Cesar93, and Photo ID 247 posted by Keenan.Schamberger60 each received 39 comments, the highest among all.
@@ -286,7 +286,7 @@ Task: Determine the most used comment text.
 ```sql
 SELECT c.comment_text, COUNT(*) AS usage_count FROM comments c GROUP BY c.comment_text ORDER BY usage_count DESC LIMIT 1;
 ```
-![](I6.PNG)
+![](SQL/I6.PNG)
 
 ### Insights:
 • ‘et et et’ is the most frequently used comment, appearing 3 times.
@@ -299,7 +299,7 @@ Task: Determine the Total number of posts per user.
 SELECT u.id AS user_id, u.username, COUNT(p.id) AS number_of_posts FROM users u LEFT JOIN photos p ON u.id = p.user_id
 GROUP BY u.id, u.username ORDER BY number_of_posts DESC;
 ```
-![](I7.PNG)
+![](SQL/I7.PNG)
 
 ### Insights:
 • Eveline95 has posted a total of 12 posts, the highest among all users.
@@ -317,7 +317,7 @@ SELECT AVG(number_of_posts) AS average_posts_per_user FROM
     GROUP BY u.id, u.username
 ) AS user_posts;
 ```
-![](I8.PNG)
+![](SQL/I8.PNG)
 
 ### Insights:
 • On average, each user has posted 2.57 photos on the platform.
@@ -333,7 +333,7 @@ SELECT u.id AS user_id, COUNT(p.id) AS number_of_posts FROM users u LEFT JOIN ph
 SELECT CONCAT(ROUND(COUNT(CASE WHEN number_of_posts = 0 THEN 1 END) / COUNT(*) * 100, 2), "% of users never posted a photo") AS no_post_user_percentage,
 GROUP_CONCAT(CASE WHEN number_of_posts = 0 THEN user_id END) AS user_ids_never_posted FROM user_posts;
 ```
-![](I9.PNG)
+![](SQL/I9.PNG)
 
 ### Insights:
 • 26.00% of users have never posted a photo. Their IDs are: 5, 7, 14, 21, 24, 25, 34, 36, 41, 45, 49, 53, 54, 57, 66, 68, 71, 74, 75, 76, 80, 81, 83, 89, 90, 91.
@@ -348,11 +348,10 @@ COUNT(DISTINCT f2.followee_id) AS followee_count,COUNT(DISTINCT p.id) AS number_
 FROM users u LEFT JOIN follows f ON u.id = f.followee_id LEFT JOIN photos p ON u.id = p.user_id
 LEFT JOIN follows f2 ON u.id = f2.follower_id GROUP BY u.id, u.username ORDER BY follower_count DESC,followee_count DESC LIMIT 5;
 ```
-![](I10.PNG)
+![](SQL/I10.PNG)
 
 ### Insights:
-• Kenton_Kirlin,Eveline95,Jaime53,Pearl7,Tierra.Trantow,David.Osinski47,Kasandra_Homenick,Mariano_Koch3,Morgan.Kassulke,Linnea59,Aurelie71,Cesar93,Florence99,Franco_Keebler64,Hulda.Macejkovic,Clint27,
-Donald.Fritsch,Darby_Herzog,Esther.Zulauf61,Bartholome.Bernhard,Delfina_VonRueden68,Jessyca_West and Esmeralda.Mraz57 are the most followed user IDs, each having a follower count of 77. 
+• Kenton_Kirlin, Eveline95, Jaime53, Pearl7, Tierra.Trantow, David.Osinski47, Kasandra_Homenick, Mariano_Koch3, Morgan.Kassulke, Linnea59, Aurelie71, Cesar93, Florence99, Franco_Keebler64, Hulda.Macejkovic, Clint27, Donald.Fritsch, Darby_Herzog, Esther.Zulauf61, Bartholome.Bernhard, Delfina_VonRueden68, Jessyca_West and Esmeralda.Mraz57 are the most followed user IDs, each having a follower count of 77. 
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## Most used Hashtags
@@ -363,7 +362,7 @@ SELECT t.id AS hashtag_id, t.tag_name AS hashtag,  COUNT(pt.photo_id) AS no_of_t
 CONCAT(ROUND((COUNT(pt.photo_id) / (SELECT COUNT(*) FROM photo_tags) * 100)), "%") AS usage_percentage
 FROM tags t JOIN photo_tags pt ON t.id = pt.tag_id GROUP BY t.id ORDER BY no_of_times_used DESC LIMIT 5;
 ```
-![](I11.PNG)
+![](SQL/I11.PNG)
 
 ### Insights:
 • ‘smile’ is the most used hashtag, appearing 12% of the time.
@@ -389,7 +388,7 @@ LEFT JOIN
 ) AS active_users ON u.id = active_users.user_id
 WHERE active_users.user_id IS NULL;
 ```
-![](I12.PNG)
+![](SQL/I12.PNG)
 
 ### Insights:
 • 13% of accounts were inactive as of 1st December 2024, 11:27:40, with the following user IDs: 7, 25, 34, 45, 49, 53, 68, 74, 80, 81, 83, 89, 90.
@@ -406,9 +405,12 @@ FROM likes WHERE user_id IN
     SELECT user_id FROM likes GROUP BY user_id HAVING COUNT(photo_id) = (SELECT COUNT(*) FROM photos)
 );
 ```
-![](I13.PNG)
+![](SQL/I13.PNG)
 
 ### Insights:
 • 13% of accounts are identified as potential bots as of 1st December 2024, 11:27:40, with the following user IDs: 5, 14, 21, 24, 36, 41, 54, 57, 66, 71, 75, 76, 91.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
+Conclusion:</br>
+Conducted an in-depth analysis of Instagram user behavior, identifying 13% inactive users, 13% potential bots, and 26% users who never posted a photo.</br>
+Utilized advanced SQL queries to derive key user engagement metrics, uncovering trends and patterns in user activity and platform usage.</br>
