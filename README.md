@@ -2,7 +2,7 @@
 User analysis involves tracking how users engage with a digital product, such as a software application or a mobile app.
 The insights derived from this analysis can be used by various teams within the business.
 
-![](IG_logo.PNG)
+![](SQL/IG_logo.PNG)
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## creating database
 
