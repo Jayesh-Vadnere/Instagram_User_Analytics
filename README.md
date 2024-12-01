@@ -32,7 +32,7 @@ CREATE TABLE photos(
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	image_url VARCHAR(355) NOT NULL,
 	user_id INT NOT NULL,
-	created_dat TIMESTAMP DEFAULT NOW(),
+	created_at TIMESTAMP DEFAULT NOW(),
 	FOREIGN KEY(user_id) REFERENCES users(id)
 );
 ```
@@ -138,148 +138,277 @@ SELECT * FROM follows;
 SELECT * FROM comments;
 ```
 ![](ERD.PNG)
-------------------------------------------------------------------------------------------------------------------------------------------
-## A.Marketing Analysis
-------------------------------------------------------------------------------------------------------------------------------------------
-## A1.loyal user reward
-Task : Identify the five oldest users on Instagram from the provided database.
+
+Data contain the registration information of users who registered between 18th week of 21 to 17th week of 2022.
+Data from 1st December 2024, 11:27:40, including information on likes, comments, posts, photo IDs, follower details, etc. is given.
+We are asked to perform user behaviour analysis.
+
 ```sql
-SELECT 
-    *
-FROM
-    users
-ORDER BY created_at
-LIMIT 5;
+SELECT * FROM users;
+Select max(created_at), min(created_at) from users; -- 2017-05-04 1:32:1 201-05-06 00:14:21
+-- Registration data given is one year data from 18th week of 201 to 17th week of 2017.
+
+SELECT * FROM tags;
+Select max(created_at), min(created_at) from tags; -- ******** 1-12-24 11:27:40
+SELECT * FROM photos;
+Select max(created_at), min(created_at) from photos; -- ******** 1-12-24 11:27:40
+SELECT * FROM photo_tags; -- No date column
+SELECT * FROM likes;
+Select max(created_at), min(created_at) from likes; -- ******** 1-12-24 11:27:40
+SELECT * FROM follows;
+Select max(created_at), min(created_at) from follows; -- ******** 1-12-24 11:27:40
+SELECT * FROM comments;
+Select max(created_at), min(created_at) from comments; -- ******** 1-12-24 11:27:40
+
+-- As data given in tags,photos,likes,follows and comments is of 1-12-2024 11:27:40, it makes sense to remove created_at column
+
+ALTER TABLE tags DROP COLUMN created_at;
+ALTER TABLE photos DROP COLUMN created_at;
+ALTER TABLE likes DROP COLUMN created_at;
+ALTER TABLE follows DROP COLUMN created_at;
+ALTER TABLE comments DROP COLUMN created_at;
 ```
-![](A1.PNG)
+------------------------------------------------------------------------------------------------------------------------------------------
+## Which week had the highest weekly engagement compared to the previous week, and what was the percentage increase?
+
+```sql
+WITH weekly_registrations AS (
+SELECT YEAR(created_at) AS year, WEEK(created_at) AS week, COUNT(id) AS current_week_registrations 
+FROM users GROUP BY YEAR(created_at), WEEK(created_at)
+),
+week_with_previous AS (
+SELECT year, week, current_week_registrations, 
+LAG(current_week_registrations) OVER (ORDER BY year, week) AS previous_week_registrations FROM weekly_registrations
+),
+percentage_calculations AS (
+SELECT year, week, current_week_registrations, previous_week_registrations,
+CASE WHEN previous_week_registrations IS NULL THEN NULL ELSE ((current_week_registrations - previous_week_registrations) / previous_week_registrations) * 100
+END AS weekly_percentage_increase FROM week_with_previous
+)
+SELECT year, week, current_week_registrations, previous_week_registrations, SUM(current_week_registrations) OVER (ORDER BY year, week) AS cumulative_registrations,
+CONCAT(ROUND(weekly_percentage_increase, 2), "%") AS weekly_percentage_change,
+CONCAT(ROUND(SUM(weekly_percentage_increase) OVER (ORDER BY year, week), 2), "%") AS cumulative_percentage_change
+FROM percentage_calculations ORDER BY ROUND(weekly_percentage_increase, 2) DESC LIMIT 1;
+```
+![](I1.PNG)
 
 ### Insights:
-• 5 users (i.e., id:- 80,67,63,95,38) are found who register on Instagram at earliest and we call them as loyal users.
+• Week 17 of 2017 had the highest weekly engagement compared to the previous week, with an increase of 300%.
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-## A2.Inactive user engagement
-Task : Identify users who have never posted a single photo on Instagram.
+## The most liked photo for each user.
+Task : Identify the users who have received the highest number of likes on a single photo on Instagram.
 ```sql
-SELECT 
-    u.id AS inactive_user_id, 
-    u.username AS inactive_username
-FROM
-    users u
-        LEFT JOIN
-    photos p ON u.id = p.user_id
-WHERE
-    p.user_id IS NULL;
+WITH photo_likes AS (
+SELECT p.id AS photo_id, p.user_id, IFNULL(COUNT(l.user_id),0) AS total_likes
+FROM photos p LEFT JOIN likes l ON p.id = l.photo_id GROUP BY p.id, p.user_id), 
+user_top_photos AS (
+SELECT user_id, MAX(total_likes) AS max_likes FROM photo_likes GROUP BY user_id
+)
+SELECT u.username, pl.photo_id, pl.total_likes FROM user_top_photos utp
+JOIN photo_likes pl ON utp.user_id = pl.user_id AND utp.max_likes = pl.total_likes
+JOIN users u ON utp.user_id = u.id ORDER BY pl.total_likes DESC LIMIT 5;
 ```
-![](A2.PNG)  
+![](I2.PNG)  
 
 ### Insights:
-• 26 inactive users are found who never posted on Instagram.
+• Photo ID 145, posted by Zack_Kemmer93, received 48 likes, the highest for any photo.
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-## A3.contest winner declaration
-Task : Determine the winner of the contest and provide their details to the team.
+## Average number of likes per photo for each user.
+Task : Determine the average number of likes per photo for each user.
 ```sql
-SELECT 
-    u.id AS user_id,
-    u.username,
-    l.photo_id,
-    p.image_url,
-    p.created_dat AS upload_date,
-    COUNT(l.user_id) AS no_of_likes
-FROM
-    users u
-        JOIN
-    photos p ON u.id = p.user_id
-        JOIN
-    likes l ON p.id = l.photo_id
-GROUP BY l.photo_id
-ORDER BY no_of_likes DESC
-LIMIT 1;
+SELECT u.id AS user_id, u.username, IFNULL(ROUND(AVG(like_count), 2), 0) AS avg_likes_per_photo
+FROM users u LEFT JOIN
+(
+    SELECT p.user_id, COUNT(l.user_id) AS like_count
+    FROM photos p
+    LEFT JOIN likes l ON p.id = l.photo_id
+    GROUP BY p.user_id, p.id
+) photo_like_stats ON u.id = photo_like_stats.user_id
+GROUP BY u.id, u.username
+ORDER BY avg_likes_per_photo DESC LIMIT 5;
 ```
-![](A3.PNG)
+![](I3.PNG)
 
 ### Insights:
-• user id 52 has posted a photo of photo id 145 which has the greatest number of likes i.e., 48 likes. Clearly the winner of the competition is user id 52. 
+• Meggie_Doyle and Delpha.Kihn receive an average of 41 likes per photo, the highest among all users.  
 
 --------------------------------------------------------------------------------------------------------------------------------------------
-## A4.hashtag research
-Task : Identify and suggest the top five most commonly used hashtags on the platform.
+## The most commented photo for each user.
+Task : Identify the most commented photo for each user.
 ```sql
-SELECT 
-    t.id AS hashtag_id,
-    t.tag_name AS hashtag,
-    COUNT(pt.photo_id) AS no_of_times_used
-FROM
-    tags t
-        JOIN
-    photo_tags pt ON t.id = pt.tag_id
-GROUP BY t.id
-ORDER BY no_of_times_used DESC
-LIMIT 5;
+WITH photo_comments AS (
+    SELECT p.id AS photo_id, p.user_id, IFNULL(COUNT(c.id), 0) AS total_comments
+    FROM photos p
+    LEFT JOIN comments c ON p.id = c.photo_id
+    GROUP BY p.id, p.user_id
+), 
+user_top_photos AS (
+    SELECT user_id, MAX(total_comments) AS max_comments 
+    FROM photo_comments 
+    GROUP BY user_id
+)
+SELECT u.username, pl.photo_id, pl.total_comments
+FROM user_top_photos utp
+JOIN photo_comments pl ON utp.user_id = pl.user_id AND utp.max_comments = pl.total_comments
+JOIN users u ON utp.user_id = u.id
+ORDER BY pl.total_comments DESC LIMIT 5;
 ```
-![](A4.PNG)
+![](I4.PNG)
 
 ### Insights:
-• Top 5 popular hashtags in descending order are smile, beach, party, fun and concert. 
+• Photo ID 13 posted by Harley_Lind18, Photo ID 157 posted by Cesar93, and Photo ID 247 posted by Keenan.Schamberger60 each received 39 comments, the highest among all.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
-## A5.Ad Campaign
-Task: Determine the day of the week when most users register on Instagram. Provide insights on when to schedule an ad campaign.
-
+## Average number of comments per photo for each user.
+Task : Determine the Average number of comments per photo for each user.
 ```sql
-SELECT 
-    DAYNAME(created_at) AS day_name,
-    COUNT(id) AS no_of_users_registered
-FROM
-    users
-GROUP BY DAYNAME(created_at)
-ORDER BY no_of_users_registered DESC
-LIMIT 1;
+SELECT u.id AS user_id, u.username, IFNULL(ROUND(AVG(comment_count), 2),0) AS avg_comments_per_photo
+FROM users u
+LEFT JOIN (
+    SELECT p.user_id,COUNT(c.id) AS comment_count
+    FROM photos p LEFT JOIN comments c ON p.id = c.photo_id
+    GROUP BY p.user_id, p.id
+) photo_comment_stats ON u.id = photo_comment_stats.user_id
+GROUP BY u.id, u.username
+ORDER BY avg_comments_per_photo DESC LIMIT 5;
 ```
-![](A5.PNG)
+![](I5.PNG)
 
 ### Insights:
-• The best day to launch an Ad Campaign is Thursday. As the maximum number of people registered is on Thursday i.e., 16 people registered. Clearly, Thursday is the best day to launch marketing campaign.
+• Photo ID 13 posted by Harley_Lind18, Photo ID 157 posted by Cesar93, and Photo ID 247 posted by Keenan.Schamberger60 each received 39 comments, the highest among all.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+## Most used comment
+Task: Determine the most used comment text.
+
+```sql
+SELECT c.comment_text, COUNT(*) AS usage_count FROM comments c GROUP BY c.comment_text ORDER BY usage_count DESC LIMIT 1;
+```
+![](I6.PNG)
+
+### Insights:
+• ‘et et et’ is the most frequently used comment, appearing 3 times.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+## Total number of posts per user.
+Task: Determine the Total number of posts per user.
+
+```sql
+SELECT u.id AS user_id, u.username, COUNT(p.id) AS number_of_posts FROM users u LEFT JOIN photos p ON u.id = p.user_id
+GROUP BY u.id, u.username ORDER BY number_of_posts DESC;
+```
+![](I7.PNG)
+
+### Insights:
+• Eveline95 has posted a total of 12 posts, the highest among all users.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+## Average number of posts per user
+Task: Determine the average number of posts per user on the platform.
+
+```sql
+SELECT AVG(number_of_posts) AS average_posts_per_user FROM 
+(
+    SELECT u.id AS user_id, u.username, COUNT(p.id) AS number_of_posts
+    FROM users u 
+    LEFT JOIN photos p ON u.id = p.user_id
+    GROUP BY u.id, u.username
+) AS user_posts;
+```
+![](I8.PNG)
+
+### Insights:
+• On average, each user has posted 2.57 photos on the platform.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+## Users who have never posted a photo.
+Task: Determine the percentage of users who have never posted a photo and provide a list of their user IDs.
+
+```sql
+WITH user_posts AS (
+SELECT u.id AS user_id, COUNT(p.id) AS number_of_posts FROM users u LEFT JOIN photos p ON u.id = p.user_id GROUP BY u.id
+)
+SELECT CONCAT(ROUND(COUNT(CASE WHEN number_of_posts = 0 THEN 1 END) / COUNT(*) * 100, 2), "% of users never posted a photo") AS no_post_user_percentage,
+GROUP_CONCAT(CASE WHEN number_of_posts = 0 THEN user_id END) AS user_ids_never_posted FROM user_posts;
+```
+![](I9.PNG)
+
+### Insights:
+• 26.00% of users have never posted a photo. Their IDs are: 5, 7, 14, 21, 24, 25, 34, 36, 41, 45, 49, 53, 54, 57, 66, 68, 71, 74, 75, 76, 80, 81, 83, 89, 90, 91.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+## Follower count and following count.
+Task: Find the most followed user on the platform.
+
+```sql
+SELECT u.id AS user_id, u.username, COUNT(DISTINCT f.follower_id) AS follower_count, 
+COUNT(DISTINCT f2.followee_id) AS followee_count,COUNT(DISTINCT p.id) AS number_of_posts
+FROM users u LEFT JOIN follows f ON u.id = f.followee_id LEFT JOIN photos p ON u.id = p.user_id
+LEFT JOIN follows f2 ON u.id = f2.follower_id GROUP BY u.id, u.username ORDER BY follower_count DESC,followee_count DESC LIMIT 5;
+```
+![](I10.PNG)
+
+### Insights:
+• Kenton_Kirlin,Eveline95,Jaime53,Pearl7,Tierra.Trantow,David.Osinski47,Kasandra_Homenick,Mariano_Koch3,Morgan.Kassulke,Linnea59,Aurelie71,Cesar93,Florence99,Franco_Keebler64,Hulda.Macejkovic,Clint27,
+Donald.Fritsch,Darby_Herzog,Esther.Zulauf61,Bartholome.Bernhard,Delfina_VonRueden68,Jessyca_West and Esmeralda.Mraz57 are the most followed user IDs, each having a follower count of 77. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+## Most used Hashtags
+Task: Identify and suggest the most commonly used hashtags on the platform.
+
+```sql
+SELECT t.id AS hashtag_id, t.tag_name AS hashtag,  COUNT(pt.photo_id) AS no_of_times_used, 
+CONCAT(ROUND((COUNT(pt.photo_id) / (SELECT COUNT(*) FROM photo_tags) * 100)), "%") AS usage_percentage
+FROM tags t JOIN photo_tags pt ON t.id = pt.tag_id GROUP BY t.id ORDER BY no_of_times_used DESC LIMIT 5;
+```
+![](I11.PNG)
+
+### Insights:
+• ‘smile’ is the most used hashtag, appearing 12% of the time.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## B.Investor Metrics
 --------------------------------------------------------------------------------------------------------------------------------------------
-## B1.user engagement
-Task: Calculate the average number of posts per user on Instagram. Also, provide the total number of photos on Instagram divided by the total number of users.
+## Inactive Users
+Task: Percentage of inactive users and their list of IDs
 
 ```sql
-SELECT 
-    ((SELECT 
-            COUNT(id)
-        FROM
-            photos) / (SELECT 
-            COUNT(id)
-        FROM
-            users)) AS Average_posts_per_user;
+SELECT CONCAT(ROUND(COUNT(DISTINCT u.id) / (SELECT COUNT(id) FROM users) * 100, 2), "%") AS inactive_percentage,
+GROUP_CONCAT(DISTINCT u.id ORDER BY u.id) AS inactive_user_ids FROM users u
+LEFT JOIN 
+(
+    SELECT DISTINCT user_id FROM likes
+    UNION
+    SELECT DISTINCT user_id FROM comments
+    UNION
+    SELECT DISTINCT user_id FROM photos
+    UNION
+    SELECT DISTINCT follower_id AS user_id FROM follows
+) AS active_users ON u.id = active_users.user_id
+WHERE active_users.user_id IS NULL;
 ```
-![](B1.PNG)
+![](I12.PNG)
 
 ### Insights:
-• Average posts per user is 2.57.
+• 13% of accounts were inactive as of 1st December 2024, 11:27:40, with the following user IDs: 7, 25, 34, 45, 49, 53, 68, 74, 80, 81, 83, 89, 90.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## B2.Bots and Fake Accounts
 Task : Identify users (potential bots) who have liked every single photo on the site, as this is not typically possible for a normal user.
 ```sql
-SELECT 
-    user_id AS potential_bot_id,
-    COUNT(photo_id) AS no_of_photos_liked
-FROM
-    likes
-GROUP BY user_id
-HAVING COUNT(photo_id) = (SELECT 
-        COUNT(id)
-    FROM
-        photos); 
+SELECT COUNT(DISTINCT user_id) AS potential_bot_count, 
+CONCAT(ROUND((COUNT(DISTINCT user_id) / (SELECT COUNT(DISTINCT id) FROM users)) * 100, 2),"%") AS bot_percentage,
+GROUP_CONCAT(DISTINCT user_id ORDER BY user_id) AS potential_bot_ids
+FROM likes WHERE user_id IN 
+(
+    SELECT user_id FROM likes GROUP BY user_id HAVING COUNT(photo_id) = (SELECT COUNT(*) FROM photos)
+);
 ```
-![](B2.PNG)
+![](I13.PNG)
 
 ### Insights:
-• 13 accounts are identified as potential bots as they like every single photo on Instagram which is not a common behavior.
+• 13% of accounts are identified as potential bots as of 1st December 2024, 11:27:40, with the following user IDs: 5, 14, 21, 24, 36, 41, 54, 57, 66, 71, 75, 76, 91.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
