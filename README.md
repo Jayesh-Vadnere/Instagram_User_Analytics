@@ -216,7 +216,7 @@ JOIN users u ON utp.user_id = u.id ORDER BY pl.total_likes DESC LIMIT 5;
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 ## Average number of likes per photo for each user.
-Task : Determine the average number of likes per photo for each user.
+Task : Determine which user has the highest average number of likes per photo.
 ```sql
 SELECT u.id AS user_id, u.username, IFNULL(ROUND(AVG(like_count), 2), 0) AS avg_likes_per_photo
 FROM users u LEFT JOIN
@@ -232,11 +232,11 @@ ORDER BY avg_likes_per_photo DESC LIMIT 5;
 ![](SQL/I3.PNG)
 
 ### Insights:
-• Meggie_Doyle and Delpha.Kihn receive an average of 41 likes per photo, the highest among all users.  
+• Delpha.Kihn and Meggie_Doyle receive an average of 41 likes per photo, the highest among all users.  
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## The most commented photo for each user.
-Task : Identify the most commented photo for each user.
+Task : Identify the users who have received the highest number of comments on a single photo on Instagram.
 ```sql
 WITH photo_comments AS (
     SELECT p.id AS photo_id, p.user_id, IFNULL(COUNT(c.id), 0) AS total_comments
@@ -262,7 +262,7 @@ ORDER BY pl.total_comments DESC LIMIT 5;
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## Average number of comments per photo for each user.
-Task : Determine the Average number of comments per photo for each user.
+Task : Determine which user has the highest average number of comments per photo.
 ```sql
 SELECT u.id AS user_id, u.username, IFNULL(ROUND(AVG(comment_count), 2),0) AS avg_comments_per_photo
 FROM users u
@@ -281,7 +281,7 @@ ORDER BY avg_comments_per_photo DESC LIMIT 5;
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## Most used comment
-Task: Determine the most used comment text.
+Task: Determine the most commonly used comment.
 
 ```sql
 SELECT c.comment_text, COUNT(*) AS usage_count FROM comments c GROUP BY c.comment_text ORDER BY usage_count DESC LIMIT 1;
@@ -293,7 +293,7 @@ SELECT c.comment_text, COUNT(*) AS usage_count FROM comments c GROUP BY c.commen
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## Total number of posts per user.
-Task: Determine the Total number of posts per user.
+Task: Determine which user has the highest total number of posts.
 
 ```sql
 SELECT u.id AS user_id, u.username, COUNT(p.id) AS number_of_posts FROM users u LEFT JOIN photos p ON u.id = p.user_id
@@ -351,7 +351,7 @@ LEFT JOIN follows f2 ON u.id = f2.follower_id GROUP BY u.id, u.username ORDER BY
 ![](SQL/I10.PNG)
 
 ### Insights:
-• Kenton_Kirlin, Eveline95, Jaime53, Pearl7, Tierra.Trantow, David.Osinski47, Kasandra_Homenick, Mariano_Koch3, Morgan.Kassulke, Linnea59, Aurelie71, Cesar93, Florence99, Franco_Keebler64, Hulda.Macejkovic, Clint27, Donald.Fritsch, Darby_Herzog, Esther.Zulauf61, Bartholome.Bernhard, Delfina_VonRueden68, Jessyca_West and Esmeralda.Mraz57 are the most followed user IDs, each having a follower count of 77. 
+• Kenton_Kirlin, Tierra.Trantow, Eveline95, Jaime53 and Kasandra_Homenick are the most followed user IDs, each having a follower count of 77.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## Most used Hashtags
@@ -371,7 +371,7 @@ FROM tags t JOIN photo_tags pt ON t.id = pt.tag_id GROUP BY t.id ORDER BY no_of_
 ## Investor Metrics
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## Inactive Users
-Task: Percentage of inactive users and their list of IDs
+Task: Determine the percentage of inactive users and provide their list of IDs.
 
 ```sql
 SELECT CONCAT(ROUND(COUNT(DISTINCT u.id) / (SELECT COUNT(id) FROM users) * 100, 2), "%") AS inactive_percentage,
