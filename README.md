@@ -368,7 +368,7 @@ FROM tags t JOIN photo_tags pt ON t.id = pt.tag_id GROUP BY t.id ORDER BY no_of_
 • ‘smile’ is the most used hashtag, appearing 12% of the time.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
-## B.Investor Metrics
+## Investor Metrics
 --------------------------------------------------------------------------------------------------------------------------------------------
 ## Inactive Users
 Task: Percentage of inactive users and their list of IDs
@@ -394,7 +394,7 @@ WHERE active_users.user_id IS NULL;
 • 13% of accounts were inactive as of 1st December 2024, 11:27:40, with the following user IDs: 7, 25, 34, 45, 49, 53, 68, 74, 80, 81, 83, 89, 90.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
-## B2.Bots and Fake Accounts
+## Bots and Fake Accounts
 Task : Identify users (potential bots) who have liked every single photo on the site, as this is not typically possible for a normal user.
 ```sql
 SELECT COUNT(DISTINCT user_id) AS potential_bot_count, 
@@ -411,6 +411,7 @@ FROM likes WHERE user_id IN
 • 13% of accounts are identified as potential bots as of 1st December 2024, 11:27:40, with the following user IDs: 5, 14, 21, 24, 36, 41, 54, 57, 66, 71, 75, 76, 91.
 
 --------------------------------------------------------------------------------------------------------------------------------------------
-Conclusion:</br>
-Conducted an in-depth analysis of Instagram user behavior, identifying 13% inactive users, 13% potential bots, and 26% users who never posted a photo.</br>
-Utilized advanced SQL queries to derive key user engagement metrics, uncovering trends and patterns in user activity and platform usage.</br>
+Recommendation:</br>
+• Re-engagement Campaigns: Develop targeted campaigns to re-engage inactive users. This could include personalized notifications, emails, or in-app alerts encouraging them to return to the platform with enticing content, new features, or community highlights.
+• Bot Detection and Verification: Invest in stronger AI and machine learning algorithms to detect and remove fake accounts and bots. This could involve pattern recognition, CAPTCHA verifications, or AI-driven behavior analysis.
+• Incentivize Content Creation: Provide incentives for users to post photos or engage with the platform. This can be in the form of gamification (e.g., rewards or milestones for posting the first photo) or offering visibility perks for new content creators.
